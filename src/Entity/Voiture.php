@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VoitureRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,20 @@ class Voiture
 
     #[ORM\ManyToOne(inversedBy: 'voiture')]
     private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    private ?Marque $marque = null;
+
+    /**
+     * @var Collection<int, Covoiturage>
+     */
+    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'voiture')]
+    private Collection $covoiturages;
+
+    public function __construct()
+    {
+        $this->covoiturages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +121,48 @@ class Voiture
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getMarque(): ?Marque
+    {
+        return $this->marque;
+    }
+
+    public function setMarque(?Marque $marque): static
+    {
+        $this->marque = $marque;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
+    {
+        return $this->covoiturages;
+    }
+
+    public function addCovoiturage(Covoiturage $covoiturage): static
+    {
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
+            $covoiturage->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCovoiturage(Covoiturage $covoiturage): static
+    {
+        if ($this->covoiturages->removeElement($covoiturage)) {
+            // set the owning side to null (unless already changed)
+            if ($covoiturage->getVoiture() === $this) {
+                $covoiturage->setVoiture(null);
+            }
+        }
 
         return $this;
     }

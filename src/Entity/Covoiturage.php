@@ -49,6 +49,9 @@ class Covoiturage
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'covoiturage')]
     private Collection $users;
 
+    #[ORM\ManyToOne(inversedBy: 'covoiturages')]
+    private ?Voiture $voiture = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -190,6 +193,18 @@ class Covoiturage
         if ($this->users->removeElement($user)) {
             $user->removeCovoiturage($this);
         }
+
+        return $this;
+    }
+
+    public function getVoiture(): ?Voiture
+    {
+        return $this->voiture;
+    }
+
+    public function setVoiture(?Voiture $voiture): static
+    {
+        $this->voiture = $voiture;
 
         return $this;
     }
