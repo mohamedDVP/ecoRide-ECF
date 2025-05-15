@@ -29,6 +29,9 @@ class Voiture
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $dateImmatriculation = null;
 
+    #[ORM\ManyToOne(inversedBy: 'voiture')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Voiture
     public function setDateImmatriculation(?\DateTime $dateImmatriculation): static
     {
         $this->dateImmatriculation = $dateImmatriculation;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -58,6 +60,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?int $credits = null;
+
+    /**
+     * @var Collection<int, Voiture>
+     */
+    #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'user')]
+    private Collection $voiture;
+
+    /**
+     * @var Collection<int, Covoiturage>
+     */
+    #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'users')]
+    private Collection $covoiturage;
+
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\ManyToMany(targetEntity: Avis::class, inversedBy: 'users')]
+    private Collection $avis;
+
+    public function __construct()
+    {
+        $this->voiture = new ArrayCollection();
+        $this->covoiturage = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -236,6 +263,84 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCredits(?int $credits): static
     {
         $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Voiture>
+     */
+    public function getVoiture(): Collection
+    {
+        return $this->voiture;
+    }
+
+    public function addVoiture(Voiture $voiture): static
+    {
+        if (!$this->voiture->contains($voiture)) {
+            $this->voiture->add($voiture);
+            $voiture->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoiture(Voiture $voiture): static
+    {
+        if ($this->voiture->removeElement($voiture)) {
+            // set the owning side to null (unless already changed)
+            if ($voiture->getUser() === $this) {
+                $voiture->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturage(): Collection
+    {
+        return $this->covoiturage;
+    }
+
+    public function addCovoiturage(Covoiturage $covoiturage): static
+    {
+        if (!$this->covoiturage->contains($covoiturage)) {
+            $this->covoiturage->add($covoiturage);
+        }
+
+        return $this;
+    }
+
+    public function removeCovoiturage(Covoiturage $covoiturage): static
+    {
+        $this->covoiturage->removeElement($covoiturage);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        $this->avis->removeElement($avi);
 
         return $this;
     }
