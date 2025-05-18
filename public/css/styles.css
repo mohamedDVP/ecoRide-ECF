@@ -1,0 +1,42 @@
+body {
+    background-color: #D9D9D9;
+}
+
+img {
+    width: 100%;
+    height: 700px;
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 15px;
+}
+
+.logo {
+    width: 50px;
+    height: 40px;
+}
+
+.btn-success {
+    background-color: #0F879F;
+    border-color: #0F879F;
+    color: #fff
+}
+
+.btn-success:hover {
+    background-color: #0C6B7B;
+    border-color: #0C6B7B;
+    color: #fff
+}
+
+.btn-success:active, .btn-success:focus {
+    background-color: #0F879F;
+    border-color: #0F879F;
+    color: #fff;
+}
+
+.form{
+    background-color: #D9D9D9;
+}
+
+.mb-custom {
+    margin-bottom: 15px; /* Ajustez cette valeur selon vos besoins */
+}
